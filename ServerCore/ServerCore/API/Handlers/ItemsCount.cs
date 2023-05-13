@@ -9,7 +9,7 @@ namespace ServerCore.API.Handlers
     {
         class CountResult
         {
-            [JsonPropertyName("count")]
+            [JsonPropertyName(Item.COUNT_PROPERTY)]
             public long Count { get; set; }
         }
 
@@ -18,7 +18,7 @@ namespace ServerCore.API.Handlers
 
         public ItemsCount(RequestParameters parameters)
         {
-            item_id = parameters.UrlParameters.GetValueOrDefault("item_id");
+            item_id = parameters.UrlParameters.GetValueOrDefault(DbEntity.ID_PROPERTY);
             database = new(Config.MongoConnectionString);
         }
 

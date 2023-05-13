@@ -1,5 +1,7 @@
 ﻿using Database;
 using Database.Entities;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using ServerCore.API.IO;
 
@@ -9,9 +11,9 @@ namespace ServerCore.API.Handlers
     {
         public string? id;
         public string? name;
-        public DbEntityFilter.FilterEnum? price_filter;
+        public FilterEnum? price_filter;
         public long? price;
-        public DbEntityFilter.FilterEnum? count_filter;
+        public FilterEnum? count_filter;
         public long? count;
         public int? page;
         public int? page_size;
@@ -19,24 +21,24 @@ namespace ServerCore.API.Handlers
 
         public ItemsGet(RequestParameters parameters)
         {
-            id = parameters.UrlParameters.GetValueOrDefault("id");
-            name = parameters.UrlParameters.GetValueOrDefault("name");
-            var priceFilter = parameters.UrlParameters.GetValueOrDefault("price_filter");
-            var _price = parameters.UrlParameters.GetValueOrDefault("price");
-            var countFilter = parameters.UrlParameters.GetValueOrDefault("count_filter");
-            var _count = parameters.UrlParameters.GetValueOrDefault("count");
-            var _page = parameters.UrlParameters.GetValueOrDefault("page");
-            var pageSize = parameters.UrlParameters.GetValueOrDefault("page_size");
+            id = parameters.UrlParameters.GetValueOrDefault(DbEntity.ID_PROPERTY);
+            name = parameters.UrlParameters.GetValueOrDefault(Item.NAME_PROPERTY);
+            var priceFilter = parameters.UrlParameters.GetValueOrDefault(Config.PriceFilterProperty);
+            var _price = parameters.UrlParameters.GetValueOrDefault(Item.PRICE_PROPERTY);
+            var countFilter = parameters.UrlParameters.GetValueOrDefault(Config.CountFilterProperty);
+            var _count = parameters.UrlParameters.GetValueOrDefault(Item.COUNT_PROPERTY);
+            var _page = parameters.UrlParameters.GetValueOrDefault(Config.PageNumberProperty);
+            var pageSize = parameters.UrlParameters.GetValueOrDefault(Config.PageSizeProperty);
             if (priceFilter != null)
             {
                 if (int.TryParse(priceFilter, out int f))
                 {
-                    price_filter = (DbEntityFilter.FilterEnum)f;
+                    price_filter = (FilterEnum)f;
                 }
                 else
                 {
                     exception = CoreException.InvalidDataTypeException;
-                    exception.Message += $": price_filter";
+                    exception.Message += $": {Config.PriceFilterProperty}";
                 }
             }
             if (_price != null)
@@ -48,19 +50,19 @@ namespace ServerCore.API.Handlers
                 else
                 {
                     exception = CoreException.InvalidDataTypeException;
-                    exception.Message += $": price";
+                    exception.Message += $": {Item.PRICE_PROPERTY}";
                 }
             }
             if (countFilter != null)
             {
                 if (int.TryParse(countFilter, out int f))
                 {
-                    count_filter = (DbEntityFilter.FilterEnum)f;
+                    count_filter = (FilterEnum)f;
                 }
                 else
                 {
                     exception = CoreException.InvalidDataTypeException;
-                    exception.Message += $": count_filter";
+                    exception.Message += $": {Config.CountFilterProperty}";
                 }
             }
             if (_count != null)
@@ -72,7 +74,7 @@ namespace ServerCore.API.Handlers
                 else
                 {
                     exception = CoreException.InvalidDataTypeException;
-                    exception.Message += $": count";
+                    exception.Message += $": {Item.COUNT_PROPERTY}";
                 }
             }
             if (_page != null)
@@ -84,7 +86,7 @@ namespace ServerCore.API.Handlers
                 else
                 {
                     exception = CoreException.InvalidDataTypeException;
-                    exception.Message += $": page";
+                    exception.Message += $": {Config.PageNumberProperty}";
                 }
             }
             if (page_size != null)
@@ -96,7 +98,7 @@ namespace ServerCore.API.Handlers
                 else
                 {
                     exception = CoreException.InvalidDataTypeException;
-                    exception.Message += $": page_size";
+                    exception.Message += $": {Config.PageSizeProperty}";
                 }
             }
         }
@@ -150,17 +152,40 @@ namespace ServerCore.API.Handlers
             }
         }
 
-        public DbEntityFilter GetFilter()
+        public FilterDefinition<Item> GetFilter()
         {
-            var filter = new DbEntityFilter();
+            var filterDefinitions = new List<FilterDefinition<Item>>();
             if (name != null)
-                filter.FilterParameters.Add(nameof(name), new(DbEntityFilter.FilterEnum.Equal, name));
+                filterDefinitions.Add(Builders<Item>.Filter.Eq(DbEntity.ID_PROPERTY, name));
             if (price != null)
-                filter.FilterParameters.Add(nameof(price), new(price_filter ?? DbEntityFilter.FilterEnum.Equal, price));
+            {
+                filterDefinitions.Add(price_filter switch
+                {
+                    FilterEnum.Equal => Builders<Item>.Filter.Eq(Item.PRICE_PROPERTY, price),
+                    FilterEnum.NotEqual => Builders<Item>.Filter.Ne(Item.PRICE_PROPERTY, price),
+                    FilterEnum.Greater => Builders<Item>.Filter.Gt(Item.PRICE_PROPERTY, price),
+                    FilterEnum.GreaterOrEqual => Builders<Item>.Filter.Gte(Item.PRICE_PROPERTY, price),
+                    FilterEnum.Less => Builders<Item>.Filter.Lt(Item.PRICE_PROPERTY, price),
+                    FilterEnum.LessOrEqual => Builders<Item>.Filter.Lte(Item.PRICE_PROPERTY, price),
+                    _ => Builders<Item>.Filter.Eq(Item.PRICE_PROPERTY, price)
+                });
+            }
             if (count != null)
-                filter.FilterParameters.Add(nameof(count), new(price_filter ?? DbEntityFilter.FilterEnum.Equal, count));
-            Logger.Log(LogSeverity.Debug, nameof(DbEntityFilter), filter.ToBsonDocument().ToString());
-            return filter;
+            {
+                filterDefinitions.Add(count_filter switch
+                {
+                    FilterEnum.Equal => Builders<Item>.Filter.Eq(Item.COUNT_PROPERTY, price),
+                    FilterEnum.NotEqual => Builders<Item>.Filter.Ne(Item.COUNT_PROPERTY, price),
+                    FilterEnum.Greater => Builders<Item>.Filter.Gt(Item.COUNT_PROPERTY, price),
+                    FilterEnum.GreaterOrEqual => Builders<Item>.Filter.Gte(Item.COUNT_PROPERTY, price),
+                    FilterEnum.Less => Builders<Item>.Filter.Lt(Item.COUNT_PROPERTY, price),
+                    FilterEnum.LessOrEqual => Builders<Item>.Filter.Lte(Item.COUNT_PROPERTY, price),
+                    _ => Builders<Item>.Filter.Eq(Item.COUNT_PROPERTY, price)
+                });
+            }
+            if (filterDefinitions.Count == 0)
+                return new BsonDocument();
+            return filterDefinitions.First();
         }
     }
 }
