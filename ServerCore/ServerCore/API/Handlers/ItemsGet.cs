@@ -89,7 +89,7 @@ namespace ServerCore.API.Handlers
                     exception.Message += $": {Config.PageNumberProperty}";
                 }
             }
-            if (page_size != null)
+            if (pageSize != null)
             {
                 if (int.TryParse(pageSize, out int ps))
                 {
@@ -152,40 +152,45 @@ namespace ServerCore.API.Handlers
             }
         }
 
-        public FilterDefinition<Item> GetFilter()
+        private FilterDefinition<Item> GetFilter()
         {
             var filterDefinitions = new List<FilterDefinition<Item>>();
             if (name != null)
-                filterDefinitions.Add(Builders<Item>.Filter.Eq(DbEntity.ID_PROPERTY, name));
+            {
+                filterDefinitions.Add(Builders<Item>.Filter.Where(item => item.Name == name));
+            }
             if (price != null)
             {
                 filterDefinitions.Add(price_filter switch
                 {
-                    FilterEnum.Equal => Builders<Item>.Filter.Eq(Item.PRICE_PROPERTY, price),
-                    FilterEnum.NotEqual => Builders<Item>.Filter.Ne(Item.PRICE_PROPERTY, price),
-                    FilterEnum.Greater => Builders<Item>.Filter.Gt(Item.PRICE_PROPERTY, price),
-                    FilterEnum.GreaterOrEqual => Builders<Item>.Filter.Gte(Item.PRICE_PROPERTY, price),
-                    FilterEnum.Less => Builders<Item>.Filter.Lt(Item.PRICE_PROPERTY, price),
-                    FilterEnum.LessOrEqual => Builders<Item>.Filter.Lte(Item.PRICE_PROPERTY, price),
-                    _ => Builders<Item>.Filter.Eq(Item.PRICE_PROPERTY, price)
+                    FilterEnum.Equal => Builders<Item>.Filter.Where(item => item.Price == price),
+                    FilterEnum.NotEqual => Builders<Item>.Filter.Where(item => item.Price != price),
+                    FilterEnum.Greater => Builders<Item>.Filter.Where(item => item.Price > price),
+                    FilterEnum.GreaterOrEqual => Builders<Item>.Filter.Where(item => item.Price >= price),
+                    FilterEnum.Less => Builders<Item>.Filter.Where(item => item.Price < price),
+                    FilterEnum.LessOrEqual => Builders<Item>.Filter.Where(item => item.Price <= price),
+                    _ => Builders<Item>.Filter.Where(item => item.Price == price)
                 });
             }
             if (count != null)
             {
                 filterDefinitions.Add(count_filter switch
                 {
-                    FilterEnum.Equal => Builders<Item>.Filter.Eq(Item.COUNT_PROPERTY, price),
-                    FilterEnum.NotEqual => Builders<Item>.Filter.Ne(Item.COUNT_PROPERTY, price),
-                    FilterEnum.Greater => Builders<Item>.Filter.Gt(Item.COUNT_PROPERTY, price),
-                    FilterEnum.GreaterOrEqual => Builders<Item>.Filter.Gte(Item.COUNT_PROPERTY, price),
-                    FilterEnum.Less => Builders<Item>.Filter.Lt(Item.COUNT_PROPERTY, price),
-                    FilterEnum.LessOrEqual => Builders<Item>.Filter.Lte(Item.COUNT_PROPERTY, price),
-                    _ => Builders<Item>.Filter.Eq(Item.COUNT_PROPERTY, price)
+                    FilterEnum.Equal => Builders<Item>.Filter.Where(item => item.Count == count),
+                    FilterEnum.NotEqual => Builders<Item>.Filter.Where(item => item.Count != count),
+                    FilterEnum.Greater => Builders<Item>.Filter.Where(item => item.Count > count),
+                    FilterEnum.GreaterOrEqual => Builders<Item>.Filter.Where(item => item.Count >= count),
+                    FilterEnum.Less => Builders<Item>.Filter.Where(item => item.Count < count),
+                    FilterEnum.LessOrEqual => Builders<Item>.Filter.Where(item => item.Count <= count),
+                    _ => Builders<Item>.Filter.Where(item => item.Count == count)
                 });
             }
             if (filterDefinitions.Count == 0)
+            {
                 return new BsonDocument();
-            return filterDefinitions.First();
+            }
+
+            return Builders<Item>.Filter.And(filterDefinitions);
         }
     }
 }
