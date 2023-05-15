@@ -107,12 +107,14 @@ namespace ServerCore.API.Handlers
         {
             if (exception != null)
             {
+                Logger.Log(LogSeverity.Info, nameof(ItemsGet), $"Error {exception.Code}");
                 return new Response()
                 {
                     Exception = exception
                 };
             }
             var database = new DatabaseDriver(Config.MongoConnectionString);
+            Logger.Log(LogSeverity.Info, nameof(ItemsGet), "Success");
             if (id != null)
             {
                 return new Response()

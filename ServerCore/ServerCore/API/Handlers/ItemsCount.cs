@@ -47,6 +47,7 @@ namespace ServerCore.API.Handlers
                     Exception = CoreException.UnknownException
                 };
             }
+            Logger.Log(LogSeverity.Debug, nameof(ItemsCount), "Success");
             return new Response()
             {
                 ResponseObjects = new()

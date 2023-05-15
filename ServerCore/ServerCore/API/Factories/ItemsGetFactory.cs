@@ -9,6 +9,7 @@ namespace ServerCore.API.Factories
     {
         public IHandler Create(HttpListenerContext context)
         {
+            Logger.Log(LogSeverity.Info, nameof(ItemsGetFactory), "Executed");
             if (context.Request.RawUrl == null)
             {
                 throw new NullReferenceException();

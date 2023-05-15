@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCore", "ServerCore\ServerCore.csproj", "{B3B4E893-F8BA-4A81-B1A1-B8FFF047EDF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerCore", "ServerCore\ServerCore.csproj", "{B3B4E893-F8BA-4A81-B1A1-B8FFF047EDF7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database", "..\..\MongoDbGUI\MongoDbGuiTask1\Database\Database.csproj", "{AF8A571C-E017-4DE7-8C9C-8C986B1C58AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RequestMock", "RequestMock\RequestMock.csproj", "{81795425-D1BD-4310-8942-ED6AB3F354F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{AF8A571C-E017-4DE7-8C9C-8C986B1C58AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF8A571C-E017-4DE7-8C9C-8C986B1C58AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF8A571C-E017-4DE7-8C9C-8C986B1C58AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81795425-D1BD-4310-8942-ED6AB3F354F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81795425-D1BD-4310-8942-ED6AB3F354F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81795425-D1BD-4310-8942-ED6AB3F354F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81795425-D1BD-4310-8942-ED6AB3F354F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

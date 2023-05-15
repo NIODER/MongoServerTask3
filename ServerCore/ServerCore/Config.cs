@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,8 @@ namespace ServerCore
         public static string Exception4Message { get; } = "Invalid data type of parameter";
         public static string Exception5Message { get; } = "Something went wrong";
         public static string Exception6Message { get; } = "You have no access to do that";
+        public static string Exception7Message { get; } = "Request body cannot be empty";
+        public static string Exception8Message { get; } = "Invalid request body format";
 
         public static string PriceFilterProperty { get; } = "price_filter";
         public static string CountFilterProperty { get; } = "count_filter";

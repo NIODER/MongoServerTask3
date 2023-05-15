@@ -21,5 +21,7 @@ namespace ServerCore
         public static CoreException InvalidDataTypeException { get => new(4, Config.Exception4Message); }
         public static CoreException UnknownException { get => new(5, Config.Exception5Message); }
         public static CoreException AccessException { get => new(6, Config.Exception6Message); }
+        public static CoreException EmptyBodyException { get => new(7, Config.Exception7Message); }
+        public static CoreException InvalidBodyException { get => new(8, Config.Exception8Message); }
     }
 }

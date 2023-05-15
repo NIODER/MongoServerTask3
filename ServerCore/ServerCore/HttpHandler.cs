@@ -36,8 +36,8 @@ namespace ServerCore
             {
                 ITEMS_COUNT_METHOD => new ItemsCountFactory(),
                 ITEMS_GET_METHOD => new ItemsGetFactory(),
-                ITEMS_CREATE_METHOD => throw new NotImplementedException(),
-                ITEMS_DELETE_METHOD => throw new NotImplementedException(),
+                ITEMS_CREATE_METHOD => new ItemsCreateFactory(),
+                ITEMS_DELETE_METHOD => new ItemsDeleteFactory(),
                 EMPLOYEE_COUNT_METHOD => throw new NotImplementedException(),
                 EMPLOYEE_GET_METHOD => throw new NotImplementedException(),
                 EMPLOYEE_CREATE_METHOD => throw new NotImplementedException(),
