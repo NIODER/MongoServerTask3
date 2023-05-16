@@ -47,7 +47,7 @@ namespace ServerCore.API.Handlers
                 {
                     new ItemsCreateResponse()
                     {
-                        Id = Item.IdString,
+                        Id = Item.Id,
                         Item = Item
                     }
                 }

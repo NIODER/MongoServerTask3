@@ -15,7 +15,7 @@ namespace ServerCore
         public Core()
         {
             HttpListener = new();
-            HttpListener.Prefixes.Add("http://127.0.0.1:13000/api/");
+            HttpListener.Prefixes.Add($"http://{Config.IpAddr}:{Config.Port}/api/");
             cancellationTokenSource = new();
         }
 

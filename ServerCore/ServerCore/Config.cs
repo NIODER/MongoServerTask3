@@ -15,6 +15,8 @@ namespace ServerCore
         public static string MongoConnectionString { get; } = "mongodb://localhost:27017";
         public static string MongoDatabaseName { get; } = "shop";
 
+        public static string PostgresConnectionString { get; } = "User ID=postgres;Password=nioder125;Host=localhost;Port=5432;Database=ServerDatabase";
+
         public static string ITEMS_COLLECTION_NAME = "items";
         public static string CATEGORIES_COLLECTION_NAME = "categories";
         public static string EMPLOYEE_COLLECTION_NAME = "employee";

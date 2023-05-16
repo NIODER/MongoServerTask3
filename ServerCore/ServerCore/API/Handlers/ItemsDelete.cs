@@ -40,7 +40,7 @@ namespace ServerCore.API.Handlers
             Item? item = database.GetEntitiesPage(
                 Config.MongoDatabaseName, 
                 Config.ITEMS_COLLECTION_NAME, 
-                Builders<Item>.Filter.Where(item => item.Id == new ObjectId(Id)))
+                Builders<Item>.Filter.Where(item => item.Id == Id))
                 .FirstOrDefault();
             if (item == null)
             {
