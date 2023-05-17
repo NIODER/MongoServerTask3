@@ -1,11 +1,13 @@
 ﻿using Amazon.Auth.AccessControlPolicy;
 using Database.Entities;
 using MongoDB.Driver.Core.Connections;
+using ServerCore.API.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ServerCore.Model
 {
@@ -15,6 +17,7 @@ namespace ServerCore.Model
         public string? Name { get; private set; }
         public string? Position { get; private set; }
         public int? Salary { get; private set; }
+        public FilterEnum? FilterEnum { get; private set; }
         public long? PasswordData { get; private set; }
         public string? Address { get; private set; }
         public string? PhoneNumber { get; private set; }
@@ -22,18 +25,30 @@ namespace ServerCore.Model
 
         public EmployeeFilterBuilder WithId(string id)
         {
+            if (CheckForSqlInjection(id))
+            {
+                throw new ArgumentException("parameter has invalid characters", nameof(id));
+            }
             Id = id;
             return this;
         }
 
         public EmployeeFilterBuilder WithName(string name) 
         { 
-            Name = name; 
+            if (CheckForSqlInjection(name))
+            {
+                throw new ArgumentException("parameter has invalid characters", nameof(name));
+            }
+            Name = name;
             return this; 
         }
 
         public EmployeeFilterBuilder WithPosition(string position)
         {
+            if (CheckForSqlInjection(position))
+            {
+                throw new ArgumentException("parameter has invalid characters", nameof(position));
+            }
             Position = position;
             return this;
         }
@@ -41,6 +56,14 @@ namespace ServerCore.Model
         public EmployeeFilterBuilder WithSalary(int salary)
         {
             Salary = salary;
+            FilterEnum = API.IO.FilterEnum.Equal;
+            return this;
+        }
+
+        public EmployeeFilterBuilder WithSalary(int salary, FilterEnum filter)
+        {
+            Salary = salary;
+            FilterEnum = filter;
             return this;
         }
 
@@ -52,18 +75,30 @@ namespace ServerCore.Model
 
         public EmployeeFilterBuilder WithAddress(string address)
         {
+            if (CheckForSqlInjection(address))
+            {
+                throw new ArgumentException("parameter has invalid characters", nameof(address));
+            }
             Address = address;
             return this;
         }
 
         public EmployeeFilterBuilder WithPhoneNumber(string phoneNumber)
         {
+            if (CheckForSqlInjection(phoneNumber))
+            {
+                throw new ArgumentException("parameter has invalid characters", nameof(phoneNumber));
+            }
             PhoneNumber = phoneNumber;
             return this;
         }
 
         public EmployeeFilterBuilder WithEmail(string email)
         {
+            if (CheckForSqlInjection(email))
+            {
+                throw new ArgumentException("parameter has invalid characters", nameof(email));
+            }
             Email = email;
             return this;
         }
@@ -120,7 +155,34 @@ namespace ServerCore.Model
             }
             if (!string.IsNullOrEmpty(Salary?.ToString()))
             {
-                condition += $"{Employee.SALARY_PROPERTY} = {Salary.Value} AND ";
+                if (FilterEnum.HasValue)
+                {
+                    switch (FilterEnum.Value)
+                    {
+                        case API.IO.FilterEnum.Equal:
+                            condition += $"{Employee.SALARY_PROPERTY} = {Salary.Value} AND ";
+                            break;
+                        case API.IO.FilterEnum.NotEqual:
+                            condition += $"{Employee.SALARY_PROPERTY} != {Salary.Value} AND ";
+                            break;
+                        case API.IO.FilterEnum.Greater:
+                            condition += $"{Employee.SALARY_PROPERTY} > {Salary.Value} AND ";
+                            break;
+                        case API.IO.FilterEnum.GreaterOrEqual:
+                            condition += $"{Employee.SALARY_PROPERTY} >= {Salary.Value} AND ";
+                            break;
+                        case API.IO.FilterEnum.Less:
+                            condition += $"{Employee.SALARY_PROPERTY} < {Salary.Value} AND ";
+                            break;
+                        case API.IO.FilterEnum.LessOrEqual:
+                            condition += $"{Employee.SALARY_PROPERTY} <= {Salary.Value} AND ";
+                            break;
+                    }
+                }
+                else
+                {
+                    condition += $"{Employee.SALARY_PROPERTY} = {Salary.Value} AND ";
+                }
             }
             if (!string.IsNullOrEmpty(PasswordData?.ToString()))
             {
@@ -137,6 +199,10 @@ namespace ServerCore.Model
             if (!string.IsNullOrEmpty(Email))
             {
                 condition += $"{Employee.EMAIL_PROPERTY} = \'{Email}\' AND ";
+            }
+            if (string.IsNullOrEmpty(condition))
+            {
+                return "true";
             }
             return condition.Remove(condition.Length - 5);
         }
@@ -182,6 +248,23 @@ namespace ServerCore.Model
                 condition += $"\'{Email}\', ";
             }
             return condition.Remove(condition.Length - 2);
+        }
+
+        private static bool CheckForSqlInjection(string parameter)
+        {
+            return (parameter.Contains('\'') ||
+                parameter.Contains('\"') ||
+                parameter.Contains("--") ||
+                parameter.Contains("&&") ||
+                parameter.Contains("||") ||
+                parameter.Contains(" OR ") ||
+                parameter.Contains(" AND ") ||
+                parameter.Contains('\\') ||
+                parameter.Contains('/') ||
+                parameter.Contains('(') ||
+                parameter.Contains(')') ||
+                parameter.Contains('%') ||
+                parameter.Contains('_'));
         }
     }
 }

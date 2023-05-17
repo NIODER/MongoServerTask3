@@ -122,7 +122,7 @@ namespace ServerCore.API.Handlers
                     ResponseObjects = database.GetEntitiesPage<Item>(
                             Config.MongoDatabaseName,
                             Config.ITEMS_COLLECTION_NAME,
-                            item => item.Id.ToString() == id).OfType<object>().ToList()
+                            item => item.Id == id).OfType<object>().ToList()
                 };
             }
             if (page == null)

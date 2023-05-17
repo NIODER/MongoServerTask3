@@ -35,5 +35,7 @@ namespace ServerCore
         public static string CountFilterProperty { get; } = "count_filter";
         public static string PageNumberProperty { get; } = "page";
         public static string PageSizeProperty { get; } = "page_size";
+
+        public static string SalaryFilterProperty { get; } = "salary_filter";
     }
 }

@@ -1,16 +1,8 @@
 ﻿using ServerCore.API;
 using ServerCore.API.Factories;
 using ServerCore.API.IO;
-using System;
-using System.Collections.Generic;
-using System.IO.Pipes;
-using System.Linq;
 using System.Net;
-using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace ServerCore
 {
@@ -38,8 +30,8 @@ namespace ServerCore
                 ITEMS_GET_METHOD => new ItemsGetFactory(),
                 ITEMS_CREATE_METHOD => new ItemsCreateFactory(),
                 ITEMS_DELETE_METHOD => new ItemsDeleteFactory(),
-                EMPLOYEE_COUNT_METHOD => throw new NotImplementedException(),
-                EMPLOYEE_GET_METHOD => throw new NotImplementedException(),
+                EMPLOYEE_COUNT_METHOD => new EmployeeCountFactory(),
+                EMPLOYEE_GET_METHOD => new EmployeeGetFactory(),
                 EMPLOYEE_CREATE_METHOD => throw new NotImplementedException(),
                 EMPLOYEE_DELETE_METHOD => throw new NotImplementedException(),
                 _ => throw new NotImplementedException(),
@@ -50,8 +42,17 @@ namespace ServerCore
         {
             string method = ExtractMethod(context.Request.RawUrl ?? string.Empty);
             IHandlerFactory handlerFactory = GetHandlerFactory(method);
-            IHandler handler = handlerFactory.Create(context);
-            Response response = handler.ProcessRequest();
+            IHandler handler;
+            Response response = new() { Exception = CoreException.UnknownException };
+            try
+            {
+                handler = handlerFactory.Create(context);
+                response = handler.ProcessRequest();
+            }
+            catch (Exception e)
+            {
+                Logger.Log(LogSeverity.Error, nameof(HttpHandler), "Error", e);
+            }
             JsonSerializer.Serialize(context.Response.OutputStream, response);
             context.Response.OutputStream.Close();
         }

@@ -67,7 +67,7 @@ namespace ServerCore.API.Handlers
             return database.GetEntitiesPage<Item>(
                 Config.MongoDatabaseName, 
                 Config.ITEMS_COLLECTION_NAME, 
-                item => item.Id.ToString() == item_id)
+                item => item.Id == item_id)
                 .First()
                 .Count;
         }

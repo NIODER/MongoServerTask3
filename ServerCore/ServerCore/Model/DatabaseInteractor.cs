@@ -2,6 +2,8 @@
 using MongoDB.Bson;
 using Npgsql;
 using System.Collections.Generic;
+using System.Net;
+using System.Xml.Linq;
 
 namespace ServerCore.Model
 {
@@ -41,6 +43,36 @@ namespace ServerCore.Model
                 employee.Email = reader.GetString(7);
             }
             return employee;
+        }
+
+        public List<Employee> GetEmployees(EmployeeFilterBuilder employeeFilterBuilder, int page = 0, int pageSize = 10)
+        {
+            var cmd = DataSource.CreateCommand($"SELECT * FROM employees " +
+                $"WHERE {employeeFilterBuilder.GetCondition()} " +
+                $"LIMIT {pageSize} OFFSET {page};");
+            var reader = cmd.ExecuteReader();
+            var employees = new List<Employee>();
+            while (reader.Read())
+            {
+                var employee = new Employee()
+                {
+                    Id = reader.GetString(0),
+                    Name = reader.GetString(1),
+                    Position = reader.GetString(2),
+                    Salary = reader.GetInt32(3),
+                    PasswordData = reader.GetInt64(4),
+                    Address = reader.GetString(5),
+                    PhoneNumber = reader.GetString(5),
+                    Email = reader.GetString(7)
+                };
+                employees.Add(employee);
+            }
+#warning убрать потом
+            if (employees.Count > pageSize)
+            {
+                throw new Exception($"employees.Count ({employees.Count}) > pageSize ({pageSize})");
+            }
+            return employees;
         }
 
         public void CreateEmployee(EmployeeFilterBuilder employeeFilterBuilder)
