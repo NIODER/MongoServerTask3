@@ -1,5 +1,6 @@
 ﻿using Amazon.Auth.AccessControlPolicy;
 using Database.Entities;
+using MongoDB.Bson;
 using MongoDB.Driver.Core.Connections;
 using ServerCore.API.IO;
 using System;
@@ -22,6 +23,22 @@ namespace ServerCore.Model
         public string? Address { get; private set; }
         public string? PhoneNumber { get; private set; }
         public string? Email { get; private set; }
+
+        public EmployeeFilterBuilder()
+        {
+        }
+
+        public EmployeeFilterBuilder(Employee employee)
+        {
+            Id = employee.Id;
+            Name = employee.Name;
+            Position = employee.Position;
+            Salary = employee.Salary;
+            PasswordData = employee.PasswordData;
+            Address = employee.Address;
+            PhoneNumber = employee.PhoneNumber;
+            Email = employee.Email;
+        }
 
         public EmployeeFilterBuilder WithId(string id)
         {

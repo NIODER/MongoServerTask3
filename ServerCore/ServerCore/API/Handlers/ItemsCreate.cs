@@ -2,17 +2,12 @@
 using Database.Entities;
 using MongoDB.Driver;
 using ServerCore.API.IO;
+using System.Text.Json.Serialization;
 
 namespace ServerCore.API.Handlers
 {
     internal class ItemsCreate : IHandler
     {
-        class ItemsCreateResponse
-        {
-            public string Id { get; set; } = string.Empty;
-            public Item? Item { get; set; }
-        }
-
         public Item Item { get; set; }
         public CoreException? CoreException { get; set; }
 
@@ -43,14 +38,7 @@ namespace ServerCore.API.Handlers
             Logger.Log(LogSeverity.Info, nameof(ItemsCreate), $"Success");
             return new Response()
             {
-                ResponseObjects = new()
-                {
-                    new ItemsCreateResponse()
-                    {
-                        Id = Item.Id,
-                        Item = Item
-                    }
-                }
+                ResponseObjects = new() { Item }
             };
         }
 

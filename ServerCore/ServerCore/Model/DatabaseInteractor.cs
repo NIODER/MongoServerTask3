@@ -2,6 +2,7 @@
 using MongoDB.Bson;
 using Npgsql;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Xml.Linq;
 
@@ -75,12 +76,24 @@ namespace ServerCore.Model
             return employees;
         }
 
-        public void CreateEmployee(EmployeeFilterBuilder employeeFilterBuilder)
+        public string CreateEmployee(EmployeeFilterBuilder employeeFilterBuilder)
         {
+            string id = ObjectId.GenerateNewId().ToString();
             var cmd = DataSource.CreateCommand($"INSERT INTO employees " +
                 $"VALUES " +
-                $"(\'{ObjectId.GenerateNewId()}\', {employeeFilterBuilder.GetParameters()});");
-            cmd.ExecuteNonQuery();
+                $"(\'{id}\', {employeeFilterBuilder.GetParameters()});");
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (NpgsqlException e)
+            {
+                if (e.ErrorCode == 23505) // unique_violation (id repeated)
+                    return CreateEmployee(employeeFilterBuilder);
+                else
+                    throw;
+            }
+            return id;
         }
 
         public void DeleteEmployee(EmployeeFilterBuilder employeeFilterBuilder)

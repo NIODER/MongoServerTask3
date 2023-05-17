@@ -32,21 +32,28 @@ namespace ServerCore
                 ITEMS_DELETE_METHOD => new ItemsDeleteFactory(),
                 EMPLOYEE_COUNT_METHOD => new EmployeeCountFactory(),
                 EMPLOYEE_GET_METHOD => new EmployeeGetFactory(),
-                EMPLOYEE_CREATE_METHOD => throw new NotImplementedException(),
-                EMPLOYEE_DELETE_METHOD => throw new NotImplementedException(),
-                _ => throw new NotImplementedException(),
+                EMPLOYEE_CREATE_METHOD => new EmployeeCreateFactory(),
+                EMPLOYEE_DELETE_METHOD => new EmployeeDeleteFactory(),
+                _ => throw new ArgumentOutOfRangeException()
             };
         }
 
         public void ExecuteHandler(HttpListenerContext context)
         {
             string method = ExtractMethod(context.Request.RawUrl ?? string.Empty);
-            IHandlerFactory handlerFactory = GetHandlerFactory(method);
-            IHandler handler;
+            IHandlerFactory handlerFactory;
+            try
+            {
+                handlerFactory = GetHandlerFactory(method);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return;
+            }
             Response response = new() { Exception = CoreException.UnknownException };
             try
             {
-                handler = handlerFactory.Create(context);
+                IHandler handler = handlerFactory.Create(context);
                 response = handler.ProcessRequest();
             }
             catch (Exception e)
