@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<constants>
+	<server>
+		<ip></ip>
+		<port></port>
+	</server>
+	<mongo>
+		<connection_string></connection_string>
+		<database></database>
+		<collections>
+			<items_collection>items</items_collection>
+			<categories_collection>categories</categories_collection>
+			<employee_collection>employee</employee_collection>
+			<order_collection>order</order_collection>
+		</collections>
+	</mongo>
+	<postgres>
+		<connection_string></connection_string>
+	</postgres>
+	<error_messages>
+		<exception1>Invalid id. Id is not specified or has invalid format</exception1>
+		<exception2>Page number out of range</exception2>
+		<exception3>Size of page is not specified</exception3>
+		<exception4>Invalid data type of parameter</exception4>
+		<exception5>Something went wrong</exception5>
+		<exception6>You have no access to do that</exception6>
+		<exception7>Request body cannot be empty</exception7>
+		<exception8>Invalid request body format</exception8>
+	</error_messages>
+	<parameters>
+		<price_filter>price_filter</price_filter>
+		<count_filter>count_filter</count_filter>
+		<page_number>page</page_number>
+		<page_size>page_size</page_size>
+		<salary_filter>salary_filter</salary_filter>
+	</parameters>
+	<methods>
+		<items_count>items.count</items_count>
+		<items_get>items.get</items_get>
+		<items_create>items.create</items_create>
+		<items_delete>items.delete</items_delete>
+		<employee_count>employee.count</employee_count>
+		<employee_get>employee.get</employee_get>
+		<employee_create>employee.create</employee_create>
+		<employee_delete>employee.delete</employee_delete>
+	</methods>
+</constants>

@@ -59,14 +59,14 @@ namespace ServerCore.API.Handlers
 
         private long GetAllItemsCount()
         {
-            return database.GetCollectionEntitiesCount(Config.MongoDatabaseName, Config.ITEMS_COLLECTION_NAME);
+            return database.GetCollectionEntitiesCount(Config.MongoDatabaseName, Config.ItemsCollectionName);
         }
 
         private long GetItemsCount()
         {
             return database.GetEntitiesPage<Item>(
                 Config.MongoDatabaseName, 
-                Config.ITEMS_COLLECTION_NAME, 
+                Config.ItemsCollectionName, 
                 item => item.Id == item_id)
                 .First()
                 .Count;

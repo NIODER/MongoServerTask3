@@ -39,7 +39,7 @@ namespace ServerCore.API.Handlers
             var database = new DatabaseDriver(Config.MongoConnectionString);
             Item? item = database.GetEntitiesPage(
                 Config.MongoDatabaseName, 
-                Config.ITEMS_COLLECTION_NAME, 
+                Config.ItemsCollectionName, 
                 Builders<Item>.Filter.Where(item => item.Id == Id))
                 .FirstOrDefault();
             if (item == null)
@@ -50,7 +50,7 @@ namespace ServerCore.API.Handlers
                     ResponseObjects = new()
                 };
             }
-            database.DeleteOneEntity(Config.MongoDatabaseName, Config.ITEMS_COLLECTION_NAME, item);
+            database.DeleteOneEntity(Config.MongoDatabaseName, Config.ItemsCollectionName, item);
             Logger.Log(LogSeverity.Info, nameof(ItemsDelete), $"Success. Item deleted: {item.ToJson()}");
             return new()
             {

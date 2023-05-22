@@ -1,4 +1,9 @@
 /documentation
+/docker
+
+*.swp
+Constants.xml
+
 
 # User-specific files
 *.rsuser

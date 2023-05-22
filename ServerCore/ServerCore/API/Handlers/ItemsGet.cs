@@ -121,7 +121,7 @@ namespace ServerCore.API.Handlers
                 {
                     ResponseObjects = database.GetEntitiesPage<Item>(
                             Config.MongoDatabaseName,
-                            Config.ITEMS_COLLECTION_NAME,
+                            Config.ItemsCollectionName,
                             item => item.Id == id).OfType<object>().ToList()
                 };
             }
@@ -131,7 +131,7 @@ namespace ServerCore.API.Handlers
                 {
                     ResponseObjects = database.GetEntitiesPage<Item>(
                         Config.MongoDatabaseName,
-                        Config.ITEMS_COLLECTION_NAME,
+                        Config.ItemsCollectionName,
                         GetFilter()).OfType<object>().ToList()
                 };
             }
@@ -148,7 +148,7 @@ namespace ServerCore.API.Handlers
                 {
                     ResponseObjects = database.GetEntitiesPage<Item>(
                         Config.MongoDatabaseName,
-                        Config.ITEMS_COLLECTION_NAME,
+                        Config.ItemsCollectionName,
                         GetFilter(), page.Value, page_size.Value).OfType<object>().ToList()
                 };
             }

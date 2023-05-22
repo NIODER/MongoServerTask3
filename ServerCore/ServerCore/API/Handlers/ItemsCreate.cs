@@ -33,8 +33,8 @@ namespace ServerCore.API.Handlers
                 };
             }
             var database = new DatabaseDriver(Config.MongoConnectionString);
-            database.InsertOneEntity(Config.MongoDatabaseName, Config.ITEMS_COLLECTION_NAME, Item);
-            Item = database.GetEntitiesPage(Config.MongoDatabaseName, Config.ITEMS_COLLECTION_NAME, GetFilter()).First();
+            database.InsertOneEntity(Config.MongoDatabaseName, Config.ItemsCollectionName, Item);
+            Item = database.GetEntitiesPage(Config.MongoDatabaseName, Config.ItemsCollectionName, GetFilter()).First();
             Logger.Log(LogSeverity.Info, nameof(ItemsCreate), $"Success");
             return new Response()
             {
